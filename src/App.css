@@ -200,6 +200,112 @@
   margin-top: 8px;
 }
 
+/* RedZone Section */
+.redzone-section {
+  margin-bottom: 40px;
+}
+
+.redzone-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+.redzone-card {
+  background: linear-gradient(135deg, #1a1a1a 0%, #1a2a3a 100%);
+  border: 2px solid #ff6b35;
+  border-radius: 12px;
+  padding: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.redzone-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #ff6b35, #ff8c42, #ff6b35);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.redzone-card:hover {
+  border-color: #ff8c42;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.3);
+}
+
+.redzone-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.redzone-badge {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 50%, #ff6b35 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+.redzone-badge::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.redzone-badge-text {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -2px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.redzone-info {
+  flex: 1;
+}
+
+.redzone-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.redzone-description {
+  font-size: 1rem;
+  color: #aaa;
+  margin: 0;
+}
+
 .teams-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -395,5 +501,32 @@
 
   .team-name {
     font-size: 1.5rem;
+  }
+
+  .redzone-card {
+    padding: 20px;
+  }
+
+  .redzone-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .redzone-badge {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto;
+  }
+
+  .redzone-badge-text {
+    font-size: 1.75rem;
+  }
+
+  .redzone-name {
+    font-size: 1.2rem;
+  }
+
+  .redzone-description {
+    font-size: 0.9rem;
   }
 }

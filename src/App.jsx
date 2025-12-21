@@ -275,6 +275,10 @@ function App() {
   const localProxy = '/api/proxy'
 
   const getStreamUrl = (teamSlug) => {
+    // Special case for RedZone
+    if (teamSlug === 'redzone') {
+      return `https://gg.poocloud.in/redzone/index.m3u8`
+    }
     return `https://gg.poocloud.in/${teamSlug}/index.m3u8`
   }
 
@@ -639,6 +643,27 @@ function App() {
                   <div className="live-game-status">{game.status}</div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* NFL RedZone - Special card for NFL */}
+        {selectedLeague === 'nfl' && (
+          <div className="redzone-section">
+            <h2 className="redzone-title">NFL RedZone</h2>
+            <div 
+              className="redzone-card"
+              onClick={() => handleTeamSelect({ slug: 'redzone', name: 'NFL RedZone', displayName: 'NFL RedZone' })}
+            >
+              <div className="redzone-content">
+                <div className="redzone-badge">
+                  <div className="redzone-badge-text">RZ</div>
+                </div>
+                <div className="redzone-info">
+                  <h3 className="redzone-name">NFL RedZone</h3>
+                  <p className="redzone-description">Watch every touchdown from every game</p>
+                </div>
+              </div>
             </div>
           </div>
         )}
