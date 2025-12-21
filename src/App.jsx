@@ -269,34 +269,18 @@ function App() {
   const blobUrlRef = useRef(null)
   const videoRef = useRef(null)
 
-  // Proxy URL - can be set via environment variable for deployment
-  // For local dev: http://localhost:3000/
-  // For Vercel: /api/proxy (relative path, will use same domain)
-  // Auto-detect Vercel if no env var is set and we're not on localhost
-  const getProxyUrl = () => {
-    if (import.meta.env.VITE_PROXY_URL) {
-      return import.meta.env.VITE_PROXY_URL
-    }
-    // Auto-detect Vercel (production deployment)
-    if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-      return '/api/proxy'
-    }
-    // Default to local proxy
-    return 'http://localhost:3000/'
-  }
-  const localProxy = getProxyUrl()
+  // Proxy is built into the app:
+  // - Local dev: Vite plugin handles /api/proxy
+  // - Vercel: Serverless function handles /api/proxy
+  const localProxy = '/api/proxy'
 
   const getStreamUrl = (teamSlug) => {
     return `https://gg.poocloud.in/${teamSlug}/index.m3u8`
   }
 
   const getProxiedUrl = (url) => {
-    // If using Vercel serverless function (relative path or contains /api/proxy)
-    if (localProxy.startsWith('/api/proxy') || localProxy === '/api/proxy') {
-      return `/api/proxy?url=${encodeURIComponent(url)}`
-    }
-    // If using local proxy server (appends URL directly)
-    return localProxy + url
+    // Always use /api/proxy (works for both Vite dev and Vercel production)
+    return `/api/proxy?url=${encodeURIComponent(url)}`
   }
 
   const fetchLiveGames = async (league) => {
@@ -435,14 +419,14 @@ function App() {
       const response = await fetch(manifestUrl).catch(() => null)
 
       if (!response || !response.ok) {
-        setStatus('Failed to load - make sure proxy server is running')
+        setStatus('Failed to load stream')
         return
       }
 
       const manifestText = await response.text()
 
       if (manifestText.includes('<!DOCTYPE') || manifestText.includes('google')) {
-        setStatus('Stream blocked - need proxy server with proper headers')
+        setStatus('Stream blocked - proxy error')
         return
       }
 
@@ -453,20 +437,22 @@ function App() {
 
       setStatus('Processing...')
 
-      // Rewrite URLs to use proxy
+      // Convert relative URLs to absolute, but keep original (don't proxy in manifest)
+      // We'll proxy via xhrSetup instead
       const baseUrl = streamUrl.substring(0, streamUrl.lastIndexOf('/') + 1)
       const lines = manifestText.split('\n')
       const rewritten = lines.map(line => {
         const trimmed = line.trim()
         if (!trimmed || trimmed.startsWith('#')) return line
 
-        let absoluteUrl = trimmed.startsWith('http')
-          ? trimmed
-          : new URL(trimmed, baseUrl).href
-        return getProxiedUrl(absoluteUrl)
+        // Convert relative URLs to absolute, but keep original (don't proxy yet)
+        if (trimmed.startsWith('http')) {
+          return trimmed
+        }
+        return new URL(trimmed, baseUrl).href
       }).join('\n')
 
-      // Create blob URL
+      // Create blob URL with original absolute URLs
       const blob = new Blob([rewritten], { type: 'application/vnd.apple.mpegurl' })
       const newBlobUrl = URL.createObjectURL(blob)
       blobUrlRef.current = newBlobUrl
@@ -478,8 +464,19 @@ function App() {
 
       if (Hls.isSupported()) {
         const hlsInstance = new Hls({
-          xhrSetup: function (xhr) {
+          xhrSetup: function (xhr, url) {
             xhr.withCredentials = false
+            // Skip proxying blob URLs (they're local)
+            if (url.startsWith('blob:')) {
+              return
+            }
+            // Proxy all HTTP/HTTPS requests
+            const originalOpen = xhr.open.bind(xhr)
+            xhr.open = function(method, requestUrl, ...args) {
+              // Proxy the URL
+              const proxiedUrl = getProxiedUrl(requestUrl)
+              return originalOpen(method, proxiedUrl, ...args)
+            }
           },
         })
 
