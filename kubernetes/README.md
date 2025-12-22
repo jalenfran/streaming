@@ -139,3 +139,4 @@ Common issues:
 - **CrashLoopBackOff**: Check logs for application errors
 - **Port conflicts**: Change nodePort in service if 30080 is already in use
 
+

@@ -58,3 +58,4 @@ NODE_PORT=$(sudo kubectl get svc -n streaming streaming-app -o jsonpath='{.spec.
 echo "🌐 App is available at: http://<node-ip>:${NODE_PORT}"
 echo ""
 
+

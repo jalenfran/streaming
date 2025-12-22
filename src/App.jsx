@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { PlayCircle, Clock, Radio } from 'lucide-react'
 import './App.css'
 
 // Hls is loaded from CDN in index.html
@@ -265,6 +266,8 @@ function App() {
   const [status, setStatus] = useState('')
   const [liveGames, setLiveGames] = useState([])
   const [loadingGames, setLoadingGames] = useState(false)
+  const [redzoneAvailable, setRedzoneAvailable] = useState(false)
+  const [checkingRedzone, setCheckingRedzone] = useState(false)
   const hlsRef = useRef(null)
   const blobUrlRef = useRef(null)
   const videoRef = useRef(null)
@@ -287,6 +290,44 @@ function App() {
     return `/api/proxy?url=${encodeURIComponent(url)}`
   }
 
+  const checkRedzoneAvailability = async () => {
+    if (selectedLeague !== 'nfl') {
+      setRedzoneAvailable(false)
+      return
+    }
+
+    setCheckingRedzone(true)
+    try {
+      const redzoneUrl = getStreamUrl('redzone')
+      const proxiedUrl = getProxiedUrl(redzoneUrl)
+      
+      // Try to fetch the manifest with a timeout
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
+      
+      // Use GET to check if manifest is valid (HEAD doesn't return body)
+      const response = await fetch(proxiedUrl, {
+        signal: controller.signal,
+      })
+      
+      clearTimeout(timeoutId)
+      
+      if (response && response.ok) {
+        const text = await response.text()
+        // Check if it's a valid HLS manifest
+        const isValid = text.includes('#EXT') && !text.includes('<!DOCTYPE')
+        setRedzoneAvailable(isValid)
+      } else {
+        setRedzoneAvailable(false)
+      }
+    } catch (error) {
+      console.log('RedZone check failed:', error.message)
+      setRedzoneAvailable(false)
+    } finally {
+      setCheckingRedzone(false)
+    }
+  }
+
   const fetchLiveGames = async (league) => {
     setLoadingGames(true)
     try {
@@ -295,6 +336,7 @@ function App() {
       const data = await response.json()
       
       const activeGames = []
+      const now = new Date()
       
       if (data.events) {
         data.events.forEach(event => {
@@ -320,6 +362,11 @@ function App() {
                             competition?.status?.type?.detail ||
                             event.status?.type?.shortDetail || ''
           
+          // Get game start time
+          const gameDate = event.date ? new Date(event.date) : null
+          const minutesUntilStart = gameDate ? Math.floor((gameDate - now) / (1000 * 60)) : null
+          const startsWithin30Min = minutesUntilStart !== null && minutesUntilStart >= 0 && minutesUntilStart <= 30
+          
           // Check if status text looks like a scheduled time (e.g., "12/21", "7:00 PM", etc.)
           const looksLikeScheduled = /^\d{1,2}\/\d{1,2}/.test(statusText) || // Date format
                                     /^\d{1,2}:\d{2}\s*(AM|PM)/i.test(statusText) || // Time format
@@ -327,9 +374,8 @@ function App() {
                                     statusText.toLowerCase().includes('pt') ||
                                     statusText.toLowerCase().includes('ct')
           
-          // Show if not final, not scheduled, and has actually started
-          // Game has started if: in-progress, halftime, overtime, or has scores
-          if (!isFinal && !isScheduled && !looksLikeScheduled && competition?.competitors) {
+          // Show if: (not final AND has started) OR (scheduled AND starts within 30 min)
+          if (!isFinal && competition?.competitors) {
             const homeTeam = competition.competitors.find(c => c.homeAway === 'home')
             const awayTeam = competition.competitors.find(c => c.homeAway === 'away')
             
@@ -350,7 +396,8 @@ function App() {
                                 statusText.toLowerCase().includes('ot') ||
                                 statusText.toLowerCase().includes('overtime')
               
-              if (hasStarted) {
+              // Show if game has started OR starts within 30 minutes
+              if (hasStarted || (isScheduled && startsWithin30Min)) {
                 const homeTeamData = findTeamByEspnData(homeTeam.team, league)
                 const awayTeamData = findTeamByEspnData(awayTeam.team, league)
                 
@@ -359,16 +406,22 @@ function App() {
                   // Get status text
                   let displayStatus = statusText || 'LIVE'
                   
-                  // Make sure it shows as live if it's not final
-                  if (!displayStatus.toLowerCase().includes('final') && 
-                      !displayStatus.toLowerCase().includes('end')) {
+                  // If scheduled and starting soon, show countdown
+                  if (isScheduled && startsWithin30Min && minutesUntilStart !== null) {
+                    if (minutesUntilStart === 0) {
+                      displayStatus = 'Starting now'
+                    } else {
+                      displayStatus = `${minutesUntilStart} min`
+                    }
+                  } else if (!displayStatus.toLowerCase().includes('final') && 
+                            !displayStatus.toLowerCase().includes('end')) {
                     displayStatus = displayStatus || 'LIVE'
                   }
                   
                   activeGames.push({
                     id: event.id,
-                    homeTeam: homeTeamData,
-                    awayTeam: awayTeamData,
+                    homeTeam: { ...homeTeamData, league }, // Store league with team data
+                    awayTeam: { ...awayTeamData, league }, // Store league with team data
                     homeScore: homeTeam.score || '0',
                     awayScore: awayTeam.score || '0',
                     status: displayStatus,
@@ -393,9 +446,11 @@ function App() {
 
   useEffect(() => {
     fetchLiveGames(selectedLeague)
+    checkRedzoneAvailability()
     // Refresh every 30 seconds
     const interval = setInterval(() => {
       fetchLiveGames(selectedLeague)
+      checkRedzoneAvailability()
     }, 30000)
     
     return () => clearInterval(interval)
@@ -474,7 +529,7 @@ function App() {
             if (url.startsWith('blob:')) {
               return
             }
-            // Proxy all HTTP/HTTPS requests
+            // Proxy all HTTP/HTTPS requests through server
             const originalOpen = xhr.open.bind(xhr)
             xhr.open = function(method, requestUrl, ...args) {
               // Proxy the URL
@@ -605,7 +660,10 @@ function App() {
 
         {liveGames.length > 0 && (
           <div className="live-games-section">
-            <h2 className="live-games-title">🔴 Live Now</h2>
+            <h2 className="live-games-title">
+              <PlayCircle size={20} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '8px' }} />
+              Live Now / Starting Soon
+            </h2>
             <div className="live-games-grid">
               {liveGames.map((game) => (
                 <div
@@ -617,7 +675,7 @@ function App() {
                     {game.awayTeam && (
                       <div className="live-game-team">
                         <img 
-                          src={getLogoUrl(game.awayTeam.code, selectedLeague, game.awayTeam.espnId)} 
+                          src={getLogoUrl(game.awayTeam.code, game.awayTeam.league || selectedLeague, game.awayTeam.espnId)} 
                           alt={game.awayTeam.name}
                           className="live-game-logo"
                           onError={(e) => e.target.style.display = 'none'}
@@ -630,7 +688,7 @@ function App() {
                     {game.homeTeam && (
                       <div className="live-game-team">
                         <img 
-                          src={getLogoUrl(game.homeTeam.code, selectedLeague, game.homeTeam.espnId)} 
+                          src={getLogoUrl(game.homeTeam.code, game.homeTeam.league || selectedLeague, game.homeTeam.espnId)} 
                           alt={game.homeTeam.name}
                           className="live-game-logo"
                           onError={(e) => e.target.style.display = 'none'}
@@ -640,15 +698,27 @@ function App() {
                       </div>
                     )}
                   </div>
-                  <div className="live-game-status">{game.status}</div>
+                  <div className="live-game-status">
+                    {game.status.toLowerCase().includes('starts') || game.status.toLowerCase().includes('starting') || game.status.toLowerCase().includes('min') ? (
+                      <>
+                        <Clock size={14} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }} />
+                        {game.status}
+                      </>
+                    ) : (
+                      <>
+                        <Radio size={14} style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '4px' }} />
+                        {game.status}
+                      </>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* NFL RedZone - Special card for NFL */}
-        {selectedLeague === 'nfl' && (
+        {/* NFL RedZone - Special card for NFL - Only show when available */}
+        {selectedLeague === 'nfl' && redzoneAvailable && (
           <div className="redzone-section">
             <h2 className="redzone-title">NFL RedZone</h2>
             <div 
