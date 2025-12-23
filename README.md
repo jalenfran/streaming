@@ -1,11 +1,13 @@
 # Sports Stream Viewer
 
-A sleek React app to stream NFL, NBA, and College Football games with live game detection.
+A sleek React app to stream NFL, NBA, MLB, NHL, and College Football games with live game detection.
 
 ## Features
 
 - 🏈 **NFL** - All 32 teams
-- 🏀 **NBA** - All 30 teams  
+- 🏀 **NBA** - All 30 teams
+- ⚾ **MLB** - All 30 teams
+- 🏒 **NHL** - All 32 teams
 - 🎓 **College Football** - 50+ major FBS teams
 - 🔴 **Live Games** - Automatic detection of active games
 - 🔍 **Search** - Quick team search
