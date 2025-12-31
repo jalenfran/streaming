@@ -73,61 +73,7 @@ const NBA_TEAMS = [
   { name: 'Washington Wizards', slug: 'washingtonwizards', code: 'WAS' },
 ]
 
-const CFB_TEAMS = [
-  { name: 'Alabama Crimson Tide', slug: 'alabamacrimsontide', code: 'ALA' },
-  { name: 'Auburn Tigers', slug: 'auburntigers', code: 'AUB' },
-  { name: 'Clemson Tigers', slug: 'clemsontigers', code: 'CLEM' },
-  { name: 'Florida Gators', slug: 'floridagators', code: 'FLA' },
-  { name: 'Florida State Seminoles', slug: 'floridastateseminoles', code: 'FSU' },
-  { name: 'Georgia Bulldogs', slug: 'georgiabulldogs', code: 'UGA' },
-  { name: 'LSU Tigers', slug: 'lsutigers', code: 'LSU' },
-  { name: 'Miami Hurricanes', slug: 'miamihurricanes', code: 'MIA' },
-  { name: 'Michigan Wolverines', slug: 'michiganwolverines', code: 'MICH' },
-  { name: 'Notre Dame Fighting Irish', slug: 'notredamefightingirish', code: 'ND' },
-  { name: 'Ohio State Buckeyes', slug: 'ohiostatebuckeyes', code: 'OSU' },
-  { name: 'Oklahoma Sooners', slug: 'oklahomasooners', code: 'OKLA' },
-  { name: 'Oregon Ducks', slug: 'oregonducks', code: 'ORE' },
-  { name: 'Penn State Nittany Lions', slug: 'pennstatenittanylions', code: 'PSU' },
-  { name: 'Texas Longhorns', slug: 'texaslonghorns', code: 'TEX' },
-  { name: 'USC Trojans', slug: 'usctrojans', code: 'USC' },
-  { name: 'Tennessee Volunteers', slug: 'tennesseevolunteers', code: 'TENN' },
-  { name: 'Texas A&M Aggies', slug: 'texasamaggies', code: 'TA&M' },
-  { name: 'Wisconsin Badgers', slug: 'wisconsinbadgers', code: 'WIS' },
-  { name: 'Washington Huskies', slug: 'washingtonhuskies', code: 'WASH' },
-  { name: 'Michigan State Spartans', slug: 'michiganstatespartans', code: 'MSU' },
-  { name: 'Iowa Hawkeyes', slug: 'iowahawkeyes', code: 'IOWA' },
-  { name: 'Oklahoma State Cowboys', slug: 'oklahomastatecowboys', code: 'OKST' },
-  { name: 'TCU Horned Frogs', slug: 'tcuhornedfrogs', code: 'TCU' },
-  { name: 'Baylor Bears', slug: 'baylorbears', code: 'BAY' },
-  { name: 'Stanford Cardinal', slug: 'stanfordcardinal', code: 'STAN' },
-  { name: 'UCLA Bruins', slug: 'uclabruins', code: 'UCLA' },
-  { name: 'Utah Utes', slug: 'utahutes', code: 'UTAH' },
-  { name: 'Arizona State Sun Devils', slug: 'arizonastatesundevils', code: 'ASU' },
-  { name: 'Arizona Wildcats', slug: 'arizonawildcats', code: 'ARIZ' },
-  { name: 'Arkansas Razorbacks', slug: 'arkansasrazorbacks', code: 'ARK' },
-  { name: 'Colorado Buffaloes', slug: 'coloradobuffaloes', code: 'COLO' },
-  { name: 'Illinois Fighting Illini', slug: 'illinoisfightingillini', code: 'ILL' },
-  { name: 'Indiana Hoosiers', slug: 'indianahoosiers', code: 'IND' },
-  { name: 'Iowa State Cyclones', slug: 'iowastatecyclones', code: 'ISU' },
-  { name: 'Kansas State Wildcats', slug: 'kansasstatewildcats', code: 'KSU' },
-  { name: 'Kentucky Wildcats', slug: 'kentuckywildcats', code: 'UK' },
-  { name: 'Louisville Cardinals', slug: 'louisvillecardinals', code: 'LOU' },
-  { name: 'Maryland Terrapins', slug: 'marylandterrapins', code: 'MD' },
-  { name: 'Minnesota Golden Gophers', slug: 'minnesotagoldengophers', code: 'MINN' },
-  { name: 'Mississippi State Bulldogs', slug: 'mississippistatebulldogs', code: 'MSST' },
-  { name: 'Missouri Tigers', slug: 'missouritigers', code: 'MIZ' },
-  { name: 'Nebraska Cornhuskers', slug: 'nebraskacornhuskers', code: 'NEB' },
-  { name: 'North Carolina Tar Heels', slug: 'northcarolinatarheels', code: 'UNC' },
-  { name: 'NC State Wolfpack', slug: 'ncstatewolfpack', code: 'NCST' },
-  { name: 'Ole Miss Rebels', slug: 'olemissrebels', code: 'MISS' },
-  { name: 'Oregon State Beavers', slug: 'oregonstatebeavers', code: 'ORST' },
-  { name: 'Purdue Boilermakers', slug: 'purdueboilermakers', code: 'PUR' },
-  { name: 'South Carolina Gamecocks', slug: 'southcarolinagamecocks', code: 'SC' },
-  { name: 'Texas Tech Red Raiders', slug: 'texastechredraiders', code: 'TTU' },
-  { name: 'Virginia Tech Hokies', slug: 'virginiatechhokies', code: 'VT' },
-  { name: 'Washington State Cougars', slug: 'washingtonstatecougars', code: 'WSU' },
-  { name: 'West Virginia Mountaineers', slug: 'westvirginiamountaineers', code: 'WVU' },
-]
+// CFB uses network channels instead of teams
 
 const MLB_TEAMS = [
   { name: 'Arizona Diamondbacks', slug: 'arizonadiamondbacks', code: 'ARI' },
@@ -200,121 +146,38 @@ const NHL_TEAMS = [
 const LEAGUES = {
   nfl: { name: 'NFL', teams: NFL_TEAMS, apiPath: 'football/nfl' },
   nba: { name: 'NBA', teams: NBA_TEAMS, apiPath: 'basketball/nba' },
-  cfb: { name: 'CFB', teams: CFB_TEAMS, apiPath: 'football/college-football' },
+  cfb: { name: 'CFB', teams: [], apiPath: 'football/college-football', useNetworks: true },
   mlb: { name: 'MLB', teams: MLB_TEAMS, apiPath: 'baseball/mlb' },
   nhl: { name: 'NHL', teams: NHL_TEAMS, apiPath: 'hockey/nhl' },
 }
 
-// Known ESPN team IDs for major CFB teams (from live games and manual mapping)
-const CFB_ESPN_IDS = {
-  'alabamacrimsontide': 333,
-  'auburntigers': 2,
-  'clemsontigers': 228,
-  'floridagators': 57, // Note: 2229 is FIU, using 57 for UF
-  'floridastateseminoles': 52,
-  'georgiabulldogs': 61,
-  'lsutigers': 99,
-  'miamihurricanes': 2390,
-  'michiganwolverines': 130,
-  'notredamefightingirish': 87,
-  'ohiostatebuckeyes': 194,
-  'oklahomasooners': 201,
-  'oregonducks': 2483,
-  'pennstatenittanylions': 213,
-  'texaslonghorns': 251,
-  'usctrojans': 30,
-  'tennesseevolunteers': 2633,
-  'texasamaggies': 245,
-  'wisconsinbadgers': 275,
-  'washingtonhuskies': 264,
-  'michiganstatespartans': 127,
-  'iowahawkeyes': 2294,
-  'oklahomastatecowboys': 197,
-  'tcuhornedfrogs': 2628,
-  'baylorbears': 239,
-  'stanfordcardinal': 24,
-  'uclabruins': 26,
-  'utahutes': 254,
-  'arizonastatesundevils': 9,
-  'arizonawildcats': 12,
-  'arkansasrazorbacks': 8,
-  'coloradobuffaloes': 38,
-  'illinoisfightingillini': 356,
-  'indianahoosiers': 84,
-  'iowastatecyclones': 66,
-  'kansasstatewildcats': 2306,
-  'kentuckywildcats': 96,
-  'louisvillecardinals': 97,
-  'marylandterrapins': 120,
-  'minnesotagoldengophers': 135,
-  'mississippistatebulldogs': 344,
-  'missouritigers': 142,
-  'nebraskacornhuskers': 158,
-  'northcarolinatarheels': 153,
-  'ncstatewolfpack': 152,
-  'olemissrebels': 145,
-  'oregonstatebeavers': 204,
-  'purdueboilermakers': 2509,
-  'southcarolinagamecocks': 2579,
-  'texastechredraiders': 2641,
-  'virginiatechhokies': 259,
-  'washingtonstatecougars': 265,
-  'westvirginiamountaineers': 277,
-}
+// Network channels for CFB (College Football)
+const CFB_NETWORKS = [
+  { name: 'ESPN', slug: 'ESPN', color: '#D00000' },
+  { name: 'ABC', slug: 'ABC', color: '#000000' },
+  { name: 'ESPN2', slug: 'ESPN2', color: '#D00000' },
+  { name: 'ESPNU', slug: 'ESPNU', color: '#D00000' },
+  { name: 'SEC Network', slug: 'SECN', color: '#004C8C' },
+  { name: 'FOX', slug: 'FOX', color: '#003087' },
+  { name: 'FS1', slug: 'FS1', color: '#003087' },
+  { name: 'CBS', slug: 'CBS', color: '#0033A0' },
+  { name: 'NBC', slug: 'NBC', color: '#6F2DA8' },
+  { name: 'Big Ten Network', slug: 'BTN', color: '#0033A0' },
+  { name: 'ACC Network', slug: 'ACCN', color: '#013CA6' },
+  { name: 'PAC-12', slug: 'PAC12', color: '#004C54' },
+]
 
-const getLogoUrl = (code, league, espnId = null, team = null) => {
+
+const getLogoUrl = (code, league) => {
   if (!code) return ''
-  if (league === 'cfb') {
-    // ESPN uses numeric team IDs for college football logos
-    // Try espnId parameter first, then team.espnId, then lookup by slug
-    let id = espnId || team?.espnId
-    if (!id && team?.slug) {
-      id = CFB_ESPN_IDS[team.slug]
-    }
-    if (id) {
-      return `https://a.espncdn.com/i/teamlogos/ncaa/500/${id}.png`
-    }
-    // Fallback to code if no ID available (won't work but shows fallback)
-    return `https://a.espncdn.com/i/teamlogos/ncaa/500/${code.toLowerCase()}.png`
-  }
   return `https://a.espncdn.com/i/teamlogos/${league}/500/${code.toLowerCase()}.png`
 }
 
 // Map ESPN team data to our team slug
 const findTeamByEspnData = (espnTeam, league) => {
   const teams = LEAGUES[league].teams
-  if (!espnTeam) return null
+  if (!espnTeam || !teams.length) return null
   
-  // For college football, ESPN uses team names/displayNames, not abbreviations
-  if (league === 'cfb') {
-    const teamName = espnTeam.displayName || espnTeam.name || espnTeam.shortDisplayName || ''
-    // Try to match by team name
-    let team = teams.find(t => {
-      const ourName = t.name.toLowerCase()
-      const espnName = teamName.toLowerCase()
-      // Exact match or contains match
-      return ourName === espnName || 
-             ourName.includes(espnName) || 
-             espnName.includes(ourName) ||
-             // Match by key words (e.g., "Alabama" matches "Alabama Crimson Tide")
-             ourName.split(' ').some(word => espnName.includes(word) && word.length > 3)
-    })
-    if (team) {
-      // Store ESPN team ID for logo URL
-      return { ...team, espnId: espnTeam.id }
-    }
-    
-    // Try abbreviation as fallback
-    if (espnTeam.abbreviation) {
-      team = teams.find(t => t.code === espnTeam.abbreviation)
-      if (team) {
-        return { ...team, espnId: espnTeam.id }
-      }
-    }
-    return null
-  }
-  
-  // For NFL/NBA, use abbreviation
   const abbrev = espnTeam.abbreviation || espnTeam.id
   if (!abbrev) return null
   
@@ -347,12 +210,9 @@ function App() {
   // - Vercel: Serverless function handles /api/proxy
   const localProxy = '/api/proxy'
 
-  const getStreamUrl = (teamSlug) => {
-    // Special case for RedZone
-    if (teamSlug === 'redzone') {
-      return `https://gg.poocloud.in/redzone/index.m3u8`
-    }
-    return `https://gg.poocloud.in/${teamSlug}/index.m3u8`
+  const getStreamUrl = (slug) => {
+    // All streams use the same URL pattern
+    return `https://gg.poocloud.in/${slug}/index.m3u8`
   }
 
   const getProxiedUrl = (url) => {
@@ -399,6 +259,13 @@ function App() {
   }
 
   const fetchLiveGames = async (league) => {
+    // Skip fetching for CFB since we use network buttons instead
+    if (league === 'cfb') {
+      setLiveGames([])
+      setLoadingGames(false)
+      return
+    }
+    
     setLoadingGames(true)
     try {
       const apiPath = LEAGUES[league].apiPath
@@ -427,7 +294,7 @@ function App() {
                          event.status?.type?.completed ||
                          (competition?.status?.type?.completed === true)
           
-          // Get status text to check if it's a scheduled time/date
+          // Get status text
           const statusText = competition?.status?.type?.shortDetail || 
                             competition?.status?.type?.detail ||
                             event.status?.type?.shortDetail || ''
@@ -437,20 +304,13 @@ function App() {
           const minutesUntilStart = gameDate ? Math.floor((gameDate - now) / (1000 * 60)) : null
           const startsWithin30Min = minutesUntilStart !== null && minutesUntilStart >= 0 && minutesUntilStart <= 30
           
-          // Check if status text looks like a scheduled time (e.g., "12/21", "7:00 PM", etc.)
-          const looksLikeScheduled = /^\d{1,2}\/\d{1,2}/.test(statusText) || // Date format
-                                    /^\d{1,2}:\d{2}\s*(AM|PM)/i.test(statusText) || // Time format
-                                    statusText.toLowerCase().includes('et') ||
-                                    statusText.toLowerCase().includes('pt') ||
-                                    statusText.toLowerCase().includes('ct')
-          
           // Show if: (not final AND has started) OR (scheduled AND starts within 30 min)
           if (!isFinal && competition?.competitors) {
             const homeTeam = competition.competitors.find(c => c.homeAway === 'home')
             const awayTeam = competition.competitors.find(c => c.homeAway === 'away')
             
             if (homeTeam && awayTeam) {
-              // Check if game has actually started (has scores or is in a live state)
+              // Check if game has actually started
               const hasStarted = competitionStatus === 'STATUS_IN_PROGRESS' ||
                                 statusName === 'STATUS_IN_PROGRESS' ||
                                 status === 'STATUS_IN_PROGRESS' ||
@@ -466,17 +326,13 @@ function App() {
                                 statusText.toLowerCase().includes('ot') ||
                                 statusText.toLowerCase().includes('overtime')
               
-              // Show if game has started OR starts within 30 minutes
               if (hasStarted || (isScheduled && startsWithin30Min)) {
                 const homeTeamData = findTeamByEspnData(homeTeam.team, league)
                 const awayTeamData = findTeamByEspnData(awayTeam.team, league)
                 
-                // Only add if both teams are found
                 if (homeTeamData && awayTeamData) {
-                  // Get status text
                   let displayStatus = statusText || 'LIVE'
                   
-                  // If scheduled and starting soon, show countdown
                   if (isScheduled && startsWithin30Min && minutesUntilStart !== null) {
                     if (minutesUntilStart === 0) {
                       displayStatus = 'Starting now'
@@ -490,12 +346,11 @@ function App() {
                   
                   activeGames.push({
                     id: event.id,
-                    homeTeam: { ...homeTeamData, league }, // Store league with team data
-                    awayTeam: { ...awayTeamData, league }, // Store league with team data
+                    homeTeam: { ...homeTeamData, league },
+                    awayTeam: { ...awayTeamData, league },
                     homeScore: homeTeam.score || '0',
                     awayScore: awayTeam.score || '0',
                     status: displayStatus,
-                    // Always use home team slug for streaming
                     streamSlug: homeTeamData.slug
                   })
                 }
@@ -537,12 +392,12 @@ function App() {
     }
   }
 
-  const loadStream = async (teamSlug) => {
+  const loadStream = async (slug) => {
     cleanup()
     setStatus('Loading stream...')
 
     try {
-      const streamUrl = getStreamUrl(teamSlug)
+      const streamUrl = getStreamUrl(slug)
       const manifestUrl = getProxiedUrl(streamUrl)
 
       const response = await fetch(manifestUrl).catch(() => null)
@@ -659,6 +514,10 @@ function App() {
     setSelectedTeam({ ...team, displayName: `${game.awayTeam.name} @ ${game.homeTeam.name}` })
   }
 
+  const handleNetworkSelect = (network) => {
+    setSelectedTeam({ slug: network.slug, name: network.name, displayName: network.name })
+  }
+
   const handleBack = () => {
     cleanup()
     setSelectedTeam(null)
@@ -717,15 +576,17 @@ function App() {
             ))}
           </div>
 
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search teams..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-          </div>
+          {selectedLeague !== 'cfb' && (
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Search teams..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+            </div>
+          )}
         </div>
 
         {liveGames.length > 0 && (
@@ -808,33 +669,53 @@ function App() {
           </div>
         )}
 
-        <div className="teams-grid">
-          {filteredTeams.length > 0 ? (
-            filteredTeams.map((team) => (
-              <div
-                key={team.slug}
-                className="team-card"
-                onClick={() => handleTeamSelect(team)}
-              >
-                <img 
-                  src={getLogoUrl(team.code, selectedLeague, null, team)} 
-                  alt={team.name}
-                  className="team-logo-img"
-                  onError={(e) => {
-                    e.target.style.display = 'none'
-                    e.target.nextSibling.style.display = 'block'
-                  }}
-                />
-                <div className="team-logo-fallback" style={{ display: 'none' }}>
-                  {team.code}
+        {/* CFB shows network channels instead of teams */}
+        {selectedLeague === 'cfb' ? (
+          <div className="networks-section">
+            <h2 className="networks-title">College Football Channels</h2>
+            <div className="networks-grid">
+              {CFB_NETWORKS.map((network) => (
+                <div
+                  key={network.slug}
+                  className="network-card"
+                  style={{ '--network-color': network.color }}
+                  onClick={() => handleNetworkSelect(network)}
+                >
+                  <div className="network-logo">{network.slug}</div>
+                  <div className="network-name">{network.name}</div>
                 </div>
-                <div className="team-name-small">{team.name}</div>
-              </div>
-            ))
-          ) : (
-            <div className="no-results">No teams found</div>
-          )}
-        </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="teams-grid">
+            {filteredTeams.length > 0 ? (
+              filteredTeams.map((team) => (
+                <div
+                  key={team.slug}
+                  className="team-card"
+                  onClick={() => handleTeamSelect(team)}
+                >
+                  <img 
+                    src={getLogoUrl(team.code, selectedLeague)} 
+                    alt={team.name}
+                    className="team-logo-img"
+                    onError={(e) => {
+                      e.target.style.display = 'none'
+                      e.target.nextSibling.style.display = 'block'
+                    }}
+                  />
+                  <div className="team-logo-fallback" style={{ display: 'none' }}>
+                    {team.code}
+                  </div>
+                  <div className="team-name-small">{team.name}</div>
+                </div>
+              ))
+            ) : (
+              <div className="no-results">No teams found</div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )
